@@ -3,13 +3,8 @@ services:
     build: .
     ports:
       - "3000:3000"
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/ytdl
-      S3_ENDPOINT: https://s3.headpat.dev
-      S3_ACCESS_KEY: GTrtxsA7PqUwFuo4ZbSB
-      S3_SECRET_KEY: 9AqKMwFDJgXlNSH3dmUL12p8vEPhtfn7IxB4Wsa5
-      S3_BUCKET: videos
-      VIDEO_TTL_HOURS: "8"
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -18,6 +13,7 @@ services:
     volumes:
       - ./src:/app/src
       - ./public:/app/public
+      - ytdlp-cache:/app/.cache/yt-dlp
 
   db:
     image: postgres:16-alpine
@@ -63,3 +59,4 @@ services:
 volumes:
   pgdata:
   miniodata:
+  ytdlp-cache:

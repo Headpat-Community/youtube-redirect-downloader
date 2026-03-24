@@ -192,7 +192,7 @@ apiRoutes.get("/videos", async (c) => {
       createdAt: v.createdAt,
       expiresAt: v.expiresAt,
     })),
-    total: countResult[0].count,
+    total: countResult[0]?.count ?? 0,
     page,
     limit,
   });

@@ -33,22 +33,29 @@ export async function startDownloadPipeline(
       .where(eq(videos.id, id));
 
     // Spawn yt-dlp
-    const proc = Bun.spawn(
-      [
-        config.YTDLP_PATH,
-        "--no-playlist",
-        "--merge-output-format",
-        "mp4",
-        "--format",
-        config.YTDLP_FORMAT,
-        "--output",
-        join(tempDir, "%(title)s.%(ext)s"),
-        "--print",
-        "after_move:filepath",
-        "--progress",
-        "--newline",
-        youtubeUrl,
-      ],
+    const args = [
+      config.YTDLP_PATH,
+      "--no-playlist",
+      "--merge-output-format",
+      "mp4",
+      "--format",
+      config.YTDLP_FORMAT,
+      "--output",
+      join(tempDir, "%(title)s.%(ext)s"),
+      "--print",
+      "after_move:filepath",
+      "--progress",
+      "--newline",
+    ];
+
+    // Use OAuth2 cached credentials for age-restricted videos
+    args.push("--cache-dir", config.YTDLP_CACHE_DIR);
+    args.push("--username", "oauth2");
+    args.push("--password", "");
+
+    args.push(youtubeUrl);
+
+    const proc = Bun.spawn(args,
       {
         stdout: "pipe",
         stderr: "pipe",
@@ -77,7 +84,7 @@ export async function startDownloadPipeline(
           /\[download\]\s+(\d+(?:\.\d+)?)%/
         );
         if (progressMatch) {
-          const pct = Math.floor(parseFloat(progressMatch[1]));
+          const pct = Math.floor(parseFloat(progressMatch[1] ?? "0"));
           await db
             .update(videos)
             .set({ downloadProgress: pct })
@@ -120,11 +127,12 @@ export async function startDownloadPipeline(
       if (files.length === 0) {
         throw new Error("No mp4 file found after yt-dlp download");
       }
-      outputFilePath = join(tempDir, files[0]);
-      videoTitle = files[0].replace(/\.mp4$/, "");
+      const file = files[0] as string;
+      outputFilePath = join(tempDir, file);
+      videoTitle = file.replace(/\.mp4$/, "");
     } else {
       const parts = outputFilePath.split(/[/\\]/);
-      videoTitle = parts[parts.length - 1].replace(/\.mp4$/, "");
+      videoTitle = (parts[parts.length - 1] ?? "").replace(/\.mp4$/, "");
     }
 
     // Update status to uploading

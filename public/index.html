@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Video Downloader</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>YouTube Video Downloader</h1>
+        <p class="subtitle">Download videos for VRChat and more</p>
+      </header>
+
+      <section class="download-form">
+        <form id="downloadForm">
+          <div class="input-group">
+            <input
+              type="url"
+              id="urlInput"
+              placeholder="Paste YouTube URL here..."
+              required
+              autocomplete="off"
+            />
+            <button type="submit" id="submitBtn">Download</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="progressSection" class="progress-section hidden">
+        <div class="card">
+          <h3 id="progressTitle">Starting download...</h3>
+          <div class="status-row">
+            <span class="status-badge" id="statusBadge">pending</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resultSection" class="result-section hidden">
+        <div class="card result-card">
+          <h3 id="resultTitle">Video Ready</h3>
+          <div class="link-group">
+            <label>VRChat Link</label>
+            <div class="copy-row">
+              <input type="text" id="vrchatLink" readonly />
+              <button class="copy-btn" data-target="vrchatLink">Copy</button>
+            </div>
+          </div>
+          <div class="link-group">
+            <label>Direct Link</label>
+            <div class="copy-row">
+              <input type="text" id="directLink" readonly />
+              <button class="copy-btn" data-target="directLink">Copy</button>
+            </div>
+          </div>
+          <p class="expires-text" id="expiresText"></p>
+        </div>
+      </section>
+
+      <section id="errorSection" class="error-section hidden">
+        <div class="card error-card">
+          <h3>Download Failed</h3>
+          <p id="errorMessage"></p>
+        </div>
+      </section>
+
+      <section class="recent-section">
+        <h2>Recent Downloads</h2>
+        <div id="recentList" class="recent-list">
+          <p class="empty-state">No downloads yet</p>
+        </div>
+      </section>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

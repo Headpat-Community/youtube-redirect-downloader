@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ytdl
+  namespace: ytdl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ytdl
+  template:
+    metadata:
+      labels:
+        app: ytdl
+    spec:
+      containers:
+        - name: ytdl
+          image: ghcr.io/headpat/youtube-redirect-downloader:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: ytdl-config
+            - secretRef:
+                name: ytdl-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp/ytdl
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 10Gi

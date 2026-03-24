@@ -1,0 +1,65 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/ytdl
+      S3_ENDPOINT: https://s3.headpat.dev
+      S3_ACCESS_KEY: GTrtxsA7PqUwFuo4ZbSB
+      S3_SECRET_KEY: 9AqKMwFDJgXlNSH3dmUL12p8vEPhtfn7IxB4Wsa5
+      S3_BUCKET: videos
+      VIDEO_TTL_HOURS: "8"
+    depends_on:
+      db:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ytdl
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - miniodata:/data
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 2;
+      mc alias set local http://minio:9000 minioadmin minioadmin;
+      mc mb local/videos --ignore-existing;
+      mc anonymous set download local/videos;
+      exit 0;
+      "
+
+volumes:
+  pgdata:
+  miniodata:

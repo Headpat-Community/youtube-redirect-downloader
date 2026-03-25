@@ -64,6 +64,7 @@ function connectSSE(id) {
 	eventSource.addEventListener("complete", (e) => {
 		const data = JSON.parse(e.data);
 		eventSource.close();
+		eventSource = null;
 		showResult(id, data);
 		loadRecent();
 	});
@@ -107,8 +108,9 @@ function showResult(id, data) {
 
 	resultTitle.textContent = data.youtubeTitle || "Video Ready";
 
-	const baseUrl = window.location.origin;
-	directLink.value = `${baseUrl}/v/${id}`;
+	const link = `${window.location.origin}/v/${id}`;
+	console.log("[showResult] setting directLink to:", link, "element:", directLink);
+	directLink.value = link;
 
 	fetch(`/api/status/${id}`)
 		.then((r) => r.json())

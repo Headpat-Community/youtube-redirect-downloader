@@ -205,5 +205,15 @@ function escapeHtml(str) {
 	return div.innerHTML;
 }
 
-// Load recent on page load
+// Load recent and config on page load
 loadRecent();
+
+fetch("/api/health")
+	.then((r) => r.json())
+	.then((data) => {
+		const ttlEl = document.getElementById("ttlValue");
+		if (ttlEl && data.videoTtlHours) {
+			ttlEl.textContent = data.videoTtlHours;
+		}
+	})
+	.catch(() => {});

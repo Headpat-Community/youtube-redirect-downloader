@@ -48,11 +48,6 @@ export async function startDownloadPipeline(
       "--newline",
     ];
 
-    // Use OAuth2 cached credentials for age-restricted videos
-    args.push("--cache-dir", config.YTDLP_CACHE_DIR);
-    args.push("--username", "oauth2");
-    args.push("--password", "");
-
     args.push(youtubeUrl);
 
     const proc = Bun.spawn(args,

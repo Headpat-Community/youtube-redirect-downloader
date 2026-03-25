@@ -27,7 +27,6 @@ export const config = {
 		process.env.YTDLP_FORMAT ||
 		"bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
 	TEMP_DIR: process.env.TEMP_DIR || "/tmp/ytdl",
-	YTDLP_CACHE_DIR: process.env.YTDLP_CACHE_DIR || "/app/.cache/yt-dlp",
 
 	CLEANUP_INTERVAL_MINUTES: parseInt(
 		process.env.CLEANUP_INTERVAL_MINUTES || "15",

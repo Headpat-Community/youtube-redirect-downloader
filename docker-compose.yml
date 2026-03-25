@@ -8,8 +8,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      minio-init:
-        condition: service_completed_successfully
+#      minio-init:
+#        condition: service_completed_successfully
     volumes:
       - ./src:/app/src
       - ./public:/app/public

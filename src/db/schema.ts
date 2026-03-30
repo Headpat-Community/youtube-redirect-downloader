@@ -2,6 +2,7 @@ import {
   pgTable,
   pgEnum,
   text,
+  bigint,
   integer,
   timestamp,
   index,
@@ -26,7 +27,7 @@ export const videos = pgTable(
     errorMessage: text("error_message"),
     s3Key: text("s3_key"),
     s3ContentType: text("s3_content_type"),
-    fileSizeBytes: integer("file_size_bytes"),
+    fileSizeBytes: bigint("file_size_bytes", { mode: "number" }),
     downloadProgress: integer("download_progress").default(0),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

@@ -1,13 +1,13 @@
-import { and, desc, eq, lt, or, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { streamSSE } from "hono/streaming";
 import { config } from "../config";
 import { db } from "../db/client";
 import { videos } from "../db/schema";
 import {
+	downloadSemaphore,
 	generateId,
 	startDownloadPipeline,
-	downloadSemaphore,
 } from "../services/downloader";
 import { checkS3Connection } from "../services/storage";
 import { isValidYoutubeUrl } from "../utils/validation";

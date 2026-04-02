@@ -50,6 +50,10 @@ export async function startDownloadPipeline(
       "bun",
     ];
 
+    if (config.YTDLP_COOKIES_PATH) {
+      args.push("--cookies", config.YTDLP_COOKIES_PATH);
+    }
+
     args.push(youtubeUrl);
 
     const proc = Bun.spawn(args,

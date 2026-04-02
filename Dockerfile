@@ -17,7 +17,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     ca-certificates \
     wget \
-    nodejs \
     && wget -q https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp \
     && chmod a+rx /usr/local/bin/yt-dlp \
     && apt-get clean \

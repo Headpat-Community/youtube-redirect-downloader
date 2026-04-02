@@ -47,7 +47,7 @@ export async function startDownloadPipeline(
       "--progress",
       "--newline",
       "--js-runtimes",
-      "nodejs",
+      "bun",
     ];
 
     args.push(youtubeUrl);

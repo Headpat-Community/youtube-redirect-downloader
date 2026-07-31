@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { eq } from "drizzle-orm";
 import { db } from "../db/client";
 import { videos } from "../db/schema";
-import { getPresignedUrl } from "../services/storage";
+import { getVideoUrl } from "../services/storage";
 
 export const redirectRoutes = new Hono();
 
@@ -32,6 +32,5 @@ redirectRoutes.get("/:id", async (c) => {
     );
   }
 
-  const presignedUrl = getPresignedUrl(video.s3Key);
-  return c.redirect(presignedUrl, 302);
+  return c.redirect(getVideoUrl(video.s3Key), 302);
 });

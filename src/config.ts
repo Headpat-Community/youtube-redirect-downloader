@@ -6,11 +6,16 @@ export const config = {
 		process.env.DATABASE_URL ||
 		`postgres://${process.env.POSTGRES_USER || "postgres"}:${process.env.POSTGRES_PASSWORD || "postgres"}@${process.env.POSTGRES_HOST || "db"}:${process.env.POSTGRES_PORT || "5432"}/${process.env.POSTGRES_DB || "videos"}`,
 
+	STORAGE_DRIVER: (process.env.STORAGE_DRIVER || "s3") as "s3" | "local",
+
 	S3_ENDPOINT: process.env.S3_ENDPOINT || "http://localhost:9000",
 	S3_ACCESS_KEY: process.env.S3_ACCESS_KEY || "minioadmin",
 	S3_SECRET_KEY: process.env.S3_SECRET_KEY || "minioadmin",
 	S3_BUCKET: process.env.S3_BUCKET || "videos",
 	S3_REGION: process.env.S3_REGION || "us-east-1",
+
+	LOCAL_STORAGE_DIR: process.env.LOCAL_STORAGE_DIR || "/app/data/videos",
+	LOCAL_STORAGE_SECRET: process.env.LOCAL_STORAGE_SECRET || "",
 
 	VIDEO_TTL_HOURS: parseInt(process.env.VIDEO_TTL_HOURS || "24", 10),
 	MAX_CONCURRENT_DOWNLOADS: parseInt(
@@ -34,3 +39,13 @@ export const config = {
 		10,
 	),
 } as const;
+
+if (config.STORAGE_DRIVER !== "s3" && config.STORAGE_DRIVER !== "local") {
+	throw new Error(
+		`Invalid STORAGE_DRIVER "${config.STORAGE_DRIVER}", expected "s3" or "local"`,
+	);
+}
+
+if (config.STORAGE_DRIVER === "local" && !config.LOCAL_STORAGE_SECRET) {
+	throw new Error("LOCAL_STORAGE_SECRET is required when STORAGE_DRIVER=local");
+}

@@ -9,7 +9,7 @@ import {
 	generateId,
 	startDownloadPipeline,
 } from "../services/downloader";
-import { checkS3Connection } from "../services/storage";
+import { checkStorageConnection } from "../services/storage";
 import { isValidYoutubeUrl } from "../utils/validation";
 
 export const apiRoutes = new Hono();
@@ -22,12 +22,15 @@ apiRoutes.get("/health", async (c) => {
 		dbOk = true;
 	} catch {}
 
-	const s3Ok = await checkS3Connection();
+	const storageOk = await checkStorageConnection();
 
 	return c.json({
-		status: dbOk && s3Ok ? "ok" : "degraded",
+		status: dbOk && storageOk ? "ok" : "degraded",
 		db: dbOk ? "connected" : "disconnected",
-		s3: s3Ok ? "reachable" : "unreachable",
+		storage: {
+			driver: config.STORAGE_DRIVER,
+			status: storageOk ? "reachable" : "unreachable",
+		},
 		activeDownloads: downloadSemaphore.activeCount,
 		queuedDownloads: downloadSemaphore.queuedCount,
 		videoTtlHours: config.VIDEO_TTL_HOURS,

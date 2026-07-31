@@ -6,6 +6,7 @@ import { config } from "./config";
 import { runMigrations } from "./db/migrate";
 import { startCleanupWorker } from "./jobs/worker";
 import { apiRoutes } from "./routes/api";
+import { filesRoutes } from "./routes/files";
 import { redirectRoutes } from "./routes/redirect";
 
 const app = new Hono();
@@ -19,6 +20,10 @@ app.route("/api", apiRoutes);
 
 // Video redirect endpoint
 app.route("/v", redirectRoutes);
+
+if (config.STORAGE_DRIVER === "local") {
+	app.route("/files", filesRoutes);
+}
 
 // Static frontend
 app.use("/*", serveStatic({ root: "./public" }));

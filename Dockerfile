@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app .
 
-RUN mkdir -p /tmp/ytdl /app/.cache/yt-dlp
+RUN mkdir -p /tmp/ytdl /app/.cache/yt-dlp /app/data/videos
 
 EXPOSE 3000
 ENV NODE_ENV=production

@@ -14,6 +14,7 @@ services:
       - ./src:/app/src
       - ./public:/app/public
       - ./cookies.txt:/app/cookies.txt:ro
+      - videodata:/app/data/videos
 
   db:
     image: postgres:18-alpine
@@ -58,3 +59,4 @@ services:
 
 volumes:
   pgdata:
+  videodata:

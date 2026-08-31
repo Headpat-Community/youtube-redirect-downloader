@@ -25,9 +25,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app .
 
-RUN mkdir -p /tmp/ytdl /app/.cache/yt-dlp /app/data/videos
+RUN mkdir -p /tmp/ytdl /app/.cache/yt-dlp /app/data/videos && chmod +x /app/entrypoint.sh
 
 EXPOSE 3000
 ENV NODE_ENV=production
 
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["bun", "run", "src/index.ts"]

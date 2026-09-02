@@ -41,7 +41,7 @@ export async function startDownloadPipeline(
       "--format",
       config.YTDLP_FORMAT,
       "--output",
-      join(tempDir, "%(title)s.%(ext)s"),
+      join(tempDir, "%(title).150B.%(ext)s"),
       "--print",
       "after_move:filepath",
       "--progress",
